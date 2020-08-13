@@ -1,0 +1,38 @@
+from selenium import webdriver
+import time
+
+class whatsappBot:
+    def __init__(self):
+        self.mensagem = "Bom dia pessoal, sou o PaolaBot, o robô da Paola e essa mensagem é um teste"
+        self.grupos = ["Pai, Mãe e Manos"] #grupos para enviar a mensagem
+        options = webdriver.ChromeOptions() #vamos adicionar 1 confirguracao:
+        options.add_argument('lang=pt-br') # a config. é que a linguagem é portugues
+        self.driver = webdriver.Chrome(executable_path=r'./chromedriver.exe') #caminho do webdriver
+
+    def EnviarMensagens(self):
+    # encontrar o grupo pelo nome
+    # vai no whatsapp web clica F12 e copia o nome da pag. HTML 
+    # <span dir="auto" title="Pai, Mãe e Manos :angel:" class="_3ko75 _5h6Y_ _3Whw5">Pai, Mãe e Manos <img crossorigin="anonymous" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="👼" draggable="false" class="b59 emoji wa _3Whw5" style="background-position: -80px -40px;"></span>
+    # html da caixa de texto <div tabindex="-1" class="_3uMse">
+    # html do botão send <span data-testid="send" data-icon="send" class="">
+
+    # fazer o programa entrar no Whatsapp web:
+        self.driver.get('https://web.whatsapp.com/')
+        time.sleep(30) #tempo para fazer o scaneamento 30'
+        
+        # entrar no grupo:
+        for grupo in self.grupos:
+            grupo = self.driver.find_element_by_xpath(f"//span[@title='{grupo}']")
+            time.sleep(3)
+            grupo.click()
+            chat_box = self.driver.find_element_by_class_name('_3uMse')
+            time.sleep(3)
+            chat_box.click() #para clicar no chatbox
+            chat_box.send_keys(self.mensagem)
+            botao_enviar = self.driver.find_element_by_xpath('//span[@data-icon="send"]')
+            time.sleep(3)
+            botao_enviar.click()
+            time.sleep(3) #para dar 1 tempinho antes de clicar para o programa nao travar
+
+bot = whatsappBot()
+bot.EnviarMensagens()
